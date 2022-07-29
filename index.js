@@ -36,9 +36,15 @@ bot.on("text", async (ctx) => {
     } else {
       var loading = await bot.telegram.sendMessage(ctx.chat.id, "Loading...");
       var patch = await downloader(info);
-      var msg = await bot.telegram.sendDocument(process.env.data_chat_id, {
-        source: patch,
-      });
+      var msg = await bot.telegram.sendAudio(
+        process.env.data_chat_id,
+        { source: patch },
+        {
+          title: info.videoDetails.title,
+          performer: info.videoDetails.author.name.replace(" - Topic", ""),
+          thumb: { source: `./temp/${videoID}.jpg` },
+        }
+      );
 
       bot.telegram.forwardMessage(
         ctx.chat.id,
@@ -51,6 +57,7 @@ bot.on("text", async (ctx) => {
       clear(videoID, patch);
     }
   } catch (error) {
+    console.log(error);
     console.log(`Err on task from ${ctx.chat.username}`);
     var nope = await bot.telegram.sendMessage(ctx.chat.id, "Nope.");
     setTimeout(() => {
