@@ -15,7 +15,7 @@ const db = mysql.createPool({
 
 const downloader = require("./module/download_audio.js");
 
-bot.on("text", async (ctx) => {
+async function test(ctx) {
   try {
     var url = ctx.message.text;
     if (!(url.includes("youtube.com") || url.includes("youtu.be")))
@@ -65,6 +65,11 @@ bot.on("text", async (ctx) => {
       bot.telegram.deleteMessage(ctx.chat.id, nope.message_id);
     }, 15 * 1000);
   }
+}
+
+bot.on("text", (ctx) => {
+  console.log("here");
+  test(ctx);
 });
 
 function clear(videoID, patch) {
