@@ -5,6 +5,11 @@ const ytdl = require("ytdl-core"),
   sharp = require("sharp"),
   id3 = require("node-id3").Promise;
 
+function file_name(name) {
+  var out = name;
+  return out.replace(/[/\\?%*:|"<>]/g, " ");
+}
+
 function main(info) {
   return new Promise(async (resolve, reject) => {
     const art =
@@ -12,7 +17,7 @@ function main(info) {
     const title = info.videoDetails.title;
     const author = info.videoDetails.author.name.replace(" - Topic", "");
     const videoID = info.videoDetails.videoId;
-    const path = `./temp/${author} - ${title}.mp3`;
+    const path = `./temp/${file_name(author)} - ${file_name(title)}.mp3`;
 
     var stream = ytdl(info.videoDetails.video_url, {
       filter: "audioonly",
