@@ -20,7 +20,13 @@ async function test(ctx) {
     var url = ctx.message.text;
     if (!(url.includes("youtube.com") || url.includes("youtu.be")))
       return ctx.reply("Nope.");
-    const info = await ytdl.getBasicInfo(url);
+    const info = await ytdl.getBasicInfo(url, {
+      requestOptions: {
+        headers: {
+          cookie: process.env.COOKIE,
+        },
+      },
+    });
     const videoID = info.videoDetails.videoId;
     console.log(`[${videoID}] Startign task from ${ctx.chat.username} user`);
     var [rows] = await db.query(
