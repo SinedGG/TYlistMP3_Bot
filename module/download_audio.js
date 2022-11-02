@@ -1,4 +1,5 @@
 const ytdl = require("ytdl-core"),
+  ffmpeg = require("fluent-ffmpeg"),
   fs = require("fs"),
   https = require("https"),
   sharp = require("sharp"),
@@ -20,19 +21,17 @@ function main(info) {
 
     var stream = ytdl(info.videoDetails.video_url, {
       filter: "audioonly",
-      requestOptions: {
-        headers: {
-          cookie: process.env.COOKIE,
-        },
-      },
     });
-
-    stream.on("end", () => {
-      console.log(`[${videoID}] Audio download complete`);
-      download_art();
-    });
-
-    stream.pipe(fs.createWriteStream(path));
+    ffmpeg(stream)
+      .audioBitrate(128)
+      .save(path)
+      .on("error", (err) => {
+        console.log(err);
+      })
+      .on("end", () => {
+        console.log(`[${videoID}] Audio download complete`);
+        download_art();
+      });
 
     function download_art() {
       https
